@@ -1,0 +1,71 @@
+{% extends 'shortener/base.html' %}
+
+{% block title %}Analytics - URL Shortener{% endblock %}
+
+{% block content %}
+<div class="mb-8">
+    <h1 class="text-4xl font-bold text-gray-800 mb-2">📊 Analytics Dashboard</h1>
+    <p class="text-gray-600">Track the performance of your shortened URLs</p>
+</div>
+
+<div class="bg-white rounded-2xl shadow-xl overflow-hidden">
+    <div class="px-6 py-4 border-b border-gray-200 bg-gradient-to-r from-blue-50 to-purple-50">
+        <h2 class="text-xl font-semibold text-gray-800">Recent URLs</h2>
+    </div>
+    
+    {% if urls %}
+        <div class="overflow-x-auto">
+            <table class="min-w-full divide-y divide-gray-200">
+                <thead class="bg-gray-50">
+                    <tr>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Short Code</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Original URL</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Clicks</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Created</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Action</th>
+                    </tr>
+                </thead>
+                <tbody class="bg-white divide-y divide-gray-200">
+                    {% for url in urls %}
+                    <tr class="hover:bg-gray-50 transition">
+                        <td class="px-6 py-4 whitespace-nowrap">
+                            <span class="font-mono text-blue-600">{{ url.short_code }}</span>
+                        </td>
+                        <td class="px-6 py-4">
+                            <div class="text-sm text-gray-900 truncate max-w-md" title="{{ url.original_url }}">
+                                {{ url.original_url }}
+                            </div>
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap">
+                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
+                                {{ url.click_count }} clicks
+                            </span>
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                            {{ url.created_at|date:"M d, Y H:i" }}
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap">
+                            <button 
+                                onclick="copyToClipboard('{{ request.scheme }}://{{ request.get_host }}/{{ url.short_code }}/')"
+                                class="text-blue-600 hover:text-blue-900 text-sm font-medium"
+                            >
+                                📋 Copy Link
+                            </button>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    {% else %}
+        <div class="px-6 py-12 text-center">
+            <div class="text-gray-400 text-6xl mb-4">🔗</div>
+            <h3 class="text-lg font-medium text-gray-900 mb-2">No URLs yet</h3>
+            <p class="text-gray-500 mb-6">Start by creating your first shortened URL!</p>
+            <a href="{% url 'home' %}" class="inline-flex items-center px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition">
+                Create URL
+            </a>
+        </div>
+    {% endif %}
+</div>
+{% endblock %}
