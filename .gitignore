@@ -1,0 +1,5 @@
+.myenv
+*.log
+db.sqlite3
+media/
+staticfiles/
